@@ -137,6 +137,7 @@ function updateTotal() {
 				if (freshTotal === total.value.raw) {
 					resolve(false);
 				} else {
+					nodecg.log.info("new fresh total: "+freshTotal);
 					total.value = {
 						raw: freshTotal,
 						formatted: formatDollars(freshTotal, {cents: false})

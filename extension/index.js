@@ -25,22 +25,23 @@ module.exports = function (nodecg) {
 	require('./timekeeping');
 	require('./obs');
 	require('./prizes');
-	require('./bids');
-	require('./total');
+	require('./tiltify-bids');
+	//require('./bids');
+	//require('./total');
 	require('./nowplaying');
 	require('./countdown');
 
 	// This is a hack.
-	require('./caspar').osc.once('initialized', () => {
-		require('./intermissions');
-	});
+	//require('./caspar').osc.once('initialized', () => {
+	//	require('./intermissions');
+	//});
 
-	loginToTracker().then(() => {
-		const schedule = require('./schedule');
-		schedule.on('permissionDenied', () => {
-			loginToTracker().then(schedule.update);
-		});
-	});
+	//loginToTracker().then(() => {
+	//	const schedule = require('./schedule');
+	//	schedule.on('permissionDenied', () => {
+	//		loginToTracker().then(schedule.update);
+	//	});
+	//});
 
 	// Tracker logins expire every 2 hours. Re-login every 90 minutes.
 	setInterval(loginToTracker, 90 * 60 * 1000);

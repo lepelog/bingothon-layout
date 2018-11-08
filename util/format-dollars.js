@@ -7,6 +7,7 @@
  * @returns {string} - The formatted string.
  */
 module.exports = function formatDollars(amount, {cents = true} = {}) {
+	console.log(maximumFractionDigits);
 	return parseFloat(amount).toLocaleString('en-US', {
 		style: 'currency',
 		currency: 'USD',

@@ -31,10 +31,11 @@ update();
 function update() {
 	nodecg.sendMessage('bids:updating');
 
-	const currentPromise = request({
-		uri: CURRENT_BIDS_URL,
-		json: true
-	});
+	// The dropbox isn't working??
+	//const currentPromise = request({
+	//	uri: CURRENT_BIDS_URL,
+	//	json: true
+	//});
 
 	const allPromise = request({
 		uri: BIDS_URL,
