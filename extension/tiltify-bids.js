@@ -20,12 +20,31 @@ const moneyTotal = nodecg.Replicant('total', {defaultValue: {
 
 const tiltifyApiKey = "c0b88d914287a2f4ee32";
 const tiltifyCluster = "mt1";
-const tiltifyEventID = "campaign.16747";
+const tiltifyEventID = "16747";
 
-const tiltifyWebApiKey = "";
+const tiltifyWebApiKey = nodecg.bundleConfig.tiltifyWebApiKey;
 
 var tiltifyPusher = new Pusher(tiltifyApiKey, {cluster: tiltifyCluster});
-var channel = tiltifyPusher.subscribe(tiltifyEventID);
+var channel = tiltifyPusher.subscribe("campaign."+tiltifyEventID);
+
+/**
+ * Updated the total donation abount right from the tiltify api
+ */
+function update() {
+    request(
+        {uri: "https://tiltify.com/api/v3/campaigns/"+tiltifyEventID,
+        json: true,
+        headers: {"Authorization":"Bearer "+tiltifyWebApiKey}})
+      .then(rawJson => {
+          nodecg.log.info(rawJson.data.amountRaised);
+          _processRawCampain(rawJson);
+      })
+      .error(err => {
+          nodecg.log.error("Something went wrong: "+err);
+      })
+}
+
+update();
 
 /*function fakeDonation() {
     moneyTotal.value = {
@@ -54,8 +73,8 @@ setInterval(fakeDonation, 1000);*/
 function _processRawCampain(rawData) {
     console.log('campain:' + JSON.stringify(rawData));
     moneyTotal.value = {
-        raw: rawData.data.amountRaised * 100,
-        formatted: rawData.data.amountRaised * 100
+        raw: rawData.data.amountRaised,
+        formatted: (rawData.data.amountRaised).toString()
     }
 }
 
