@@ -181,23 +181,25 @@ function update() {
 		json: true
 	});
 
-	const adsPromise = request({
-		uri: nodecg.bundleConfig.useMockData ?
-			'https://dl.dropboxusercontent.com/u/6089084/gdq_mock/ads.json' :
-			'https://private.gamesdonequick.com/tracker/gdq/ads/20/',
-		json: true
-	});
+	//const adsPromise = request({
+	//	uri: nodecg.bundleConfig.useMockData ?
+	//		'https://dl.dropboxusercontent.com/u/6089084/gdq_mock/ads.json' :
+	//		'https://private.gamesdonequick.com/tracker/gdq/ads/20/',
+	//	json: true
+	//});
 
-	const interviewsPromise = request({
-		uri: nodecg.bundleConfig.useMockData ?
-			'https://dl.dropboxusercontent.com/u/6089084/gdq_mock/interviews.json' :
-			'https://private.gamesdonequick.com/tracker/gdq/interviews/20/',
-		json: true
-	});
+	//const interviewsPromise = request({
+	//	uri: nodecg.bundleConfig.useMockData ?
+	//		'https://dl.dropboxusercontent.com/u/6089084/gdq_mock/interviews.json' :
+	//		'https://private.gamesdonequick.com/tracker/gdq/interviews/20/',
+	//	json: true
+	//});
 
 	return Promise.all([
-		runnersPromise, runsPromise, adsPromise, interviewsPromise
-	]).then(([runnersJSON, runsJSON, adsJSON, interviewsJSON]) => {
+		runnersPromise, runsPromise
+	]).then(([runnersJSON, runsJSON]) => {
+		var adsJSON = [];
+		var interviewsJSON = [];
 		const formattedRunners = [];
 		runnersJSON.forEach(obj => {
 			formattedRunners[obj.pk] = {

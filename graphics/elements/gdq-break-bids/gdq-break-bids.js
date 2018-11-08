@@ -465,14 +465,14 @@
 
 		_typeAnim($el, {splitType = 'chars,words'} = {}) {
 			const tl = new TimelineLite();
-			const split = new SplitText($el, {
-				type: splitType,
-				charsClass: 'character style-scope gdq-break-bids',
-				linesClass: 'line style-scope gdq-break-bids'
-			});
-			$el.split = split;
+			// const split = new SplitText($el, {
+			// 	type: splitType,
+			// 	charsClass: 'character style-scope gdq-break-bids',
+			// 	linesClass: 'line style-scope gdq-break-bids'
+			// });
+			// $el.split = split;
 
-			switch (splitType) {
+			/*switch (splitType) {
 				case 'chars':
 					tl.staggerFrom(split.chars, 0.001, {
 						visibility: 'hidden'
@@ -491,38 +491,36 @@
 					break;
 				default:
 					throw new Error(`Unexpected splitType "${splitType}"`);
-			}
+			}*/
 
 			return tl;
 		}
 
 		_untypeAnim($el) {
 			return new Promise(resolve => {
-				if (!$el.split) {
-					return setTimeout(resolve, 0);
-				}
+				return setTimeout(resolve, 0);
 
-				const tl = new TimelineLite({
-					onComplete: resolve
-				});
+				// const tl = new TimelineLite({
+				// 	onComplete: resolve
+				// });
 
-				const split = $el.split;
+				// const split = $el.split;
 
-				if (split.words) {
-					split.words.forEach(word => {
-						tl.staggerTo(word.children, 0.001, {
-							visibility: 'hidden'
-						}, TYPE_INTERVAL);
+				// if (split.words) {
+				// 	split.words.forEach(word => {
+				// 		tl.staggerTo(word.children, 0.001, {
+				// 			visibility: 'hidden'
+				// 		}, TYPE_INTERVAL);
 
-						tl.to(EMPTY_OBJ, TYPE_INTERVAL, EMPTY_OBJ);
-					});
-				} else {
-					tl.staggerFrom(split.chars, 0.001, {
-						visibility: 'hidden'
-					}, TYPE_INTERVAL);
-				}
+				// 		tl.to(EMPTY_OBJ, TYPE_INTERVAL, EMPTY_OBJ);
+				// 	});
+				// } else {
+				// 	tl.staggerFrom(split.chars, 0.001, {
+				// 		visibility: 'hidden'
+				// 	}, TYPE_INTERVAL);
+				// }
 
-				return tl;
+				// return tl;
 			});
 		}
 	}

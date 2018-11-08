@@ -13,6 +13,7 @@ const nodecg = require('./util/nodecg-api-context').get();
 const currentBidsRep = nodecg.Replicant('currentBids', {defaultValue: []});
 const allBidsRep = nodecg.Replicant('allBids', {defaultValue: []});
 const bitsTotal = nodecg.Replicant('bits:total', {defaultValue: 0});
+const tiltifyBids = nodecg.Replicant('tiltifyDonations', {defaultValue: []})
 const moneyTotal = nodecg.Replicant('total', {defaultValue: {
     raw: 0,
     formatted: "0"
@@ -20,7 +21,7 @@ const moneyTotal = nodecg.Replicant('total', {defaultValue: {
 
 const tiltifyApiKey = "c0b88d914287a2f4ee32";
 const tiltifyCluster = "mt1";
-const tiltifyEventID = "16747";
+const tiltifyEventID = "19861";//16747
 
 const tiltifyWebApiKey = nodecg.bundleConfig.tiltifyWebApiKey;
 
@@ -30,7 +31,7 @@ var channel = tiltifyPusher.subscribe("campaign."+tiltifyEventID);
 /**
  * Updated the total donation abount right from the tiltify api
  */
-function update() {
+function updateCampaign() {
     request(
         {uri: "https://tiltify.com/api/v3/campaigns/"+tiltifyEventID,
         json: true,
@@ -42,6 +43,57 @@ function update() {
       .error(err => {
           nodecg.log.error("Something went wrong: "+err);
       })
+}
+
+/**
+ * Updates challenges, aka donation incentives
+ */
+function updateChallenges() {
+    request(
+        {uri: "https://tiltify.com/api/v3/campaigns/"+tiltifyEventID+"/challenges",
+        json: true,
+        headers: {"Authorization":"Bearer "+tiltifyWebApiKey}})
+        .then(rawJson => {
+            // example:{"meta":{"status":200},"data":[{"id":2162,"type":"Challenge","name":"Delete the \"Worlds Sexiest Warlock\" Challenge ","totalAmountRaised":10.0,"amount":4947.0,"campaignId":16747,"active":true,"endsAt":1529474400000,"createdAt":1529453219000,"updatedAt":1529453319000}]}
+            var allChallenges = [];
+            var challenge;
+            for (var i in rawJson.data) {
+                challenge = rawJson.data[i];
+                var formattedChallenge = {
+                    id: challenge.id,
+                    type: "challenge",
+                    name: "test",
+                    description: challenge.name,
+                    total: numeral(challenge.totalAmountRaised).format('$0,0[.]00'),
+                    rawTotal: parseFloat(challenge.totalAmountRaised),
+                    speedrun: "speed run",
+                    speedrunEndtime: Date.parse(challenge.endsAt),
+                    public: true,
+                    isBitsChallenge: false
+                };
+                formattedChallenge.goal = numeral(challenge.amount).format('0,0');
+                formattedChallenge.rawGoal = parseFloat(challenge.amount);
+                formattedChallenge.goalMet = formattedChallenge.rawTotal >= formattedChallenge.rawGoal;
+                formattedChallenge.state = formattedChallenge.goalMet ? 'CLOSED' : 'OPENED';
+                allChallenges.push(formattedChallenge);
+            }
+            allChallenges.sort((a,b) =>  a.speedrunEndtime > b.speedrunEndtime);
+            //if (allBidsRep.value != allChallenges) {
+            //    allBidsRep.value = allChallenges;
+            //}
+            if (currentBidsRep.value != allChallenges) {
+                currentBidsRep.value = allChallenges;
+            }
+            nodecg.log.info(JSON.stringify(allChallenges));
+      })
+      .error(err => {
+          nodecg.log.error("Something went wrong: "+err);
+      })
+}
+
+function update() {
+    updateCampaign();
+    updateChallenges();
 }
 
 update();

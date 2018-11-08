@@ -32,10 +32,10 @@ function update() {
 	nodecg.sendMessage('bids:updating');
 
 	// The dropbox isn't working??
-	//const currentPromise = request({
-	//	uri: CURRENT_BIDS_URL,
-	//	json: true
-	//});
+	const currentPromise = request({
+		uri: CURRENT_BIDS_URL,
+		json: true
+	});
 
 	const allPromise = request({
 		uri: BIDS_URL,
@@ -68,6 +68,7 @@ function update() {
 		if (!equal(currentBidsRep.value, currentBids)) {
 			currentBidsRep.value = currentBids;
 		}
+
 	}).catch(err => {
 		nodecg.log.error('Error updating bids:', err);
 	}).finally(() => {

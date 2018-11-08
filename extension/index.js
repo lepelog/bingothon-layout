@@ -30,6 +30,7 @@ module.exports = function (nodecg) {
 	//require('./total');
 	require('./nowplaying');
 	require('./countdown');
+	require('./schedule');
 
 	// This is a hack.
 	//require('./caspar').osc.once('initialized', () => {
