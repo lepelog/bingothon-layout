@@ -134,6 +134,6 @@ function _processRawDonation(rawData) {
     console.log('donation:' + JSON.stringify(rawData));
 }
 
-channel.bind('campaign', _processRawDonation);
+channel.bind('campaign', _processRawCampain);
 
-channel.bind('donation', _processRawCampain);
+channel.bind('donation', _processRawDonation);
